@@ -1,3 +1,4 @@
+import { useNavigation } from "@react-navigation/native"
 import { 
   VStack, 
   Image, 
@@ -13,16 +14,25 @@ import LogoSvg from "@assets/logo.svg"
 import { Input } from "@components/Input"
 import { Button } from "@components/Button"
 
+import { AuthNavigatorRoutesProps } from "@routes/auth.routes"
+
 export function SignUp() {
+
+  const navigation = useNavigation<AuthNavigatorRoutesProps>()
+
+  function handleGoBack() {
+    navigation.goBack()
+  }
 
   return (
     <ScrollView 
       contentContainerStyle={{ flexGrow: 1 }}
       showsVerticalScrollIndicator={false}
     >
-      <VStack flex={1} bg="gray.700" px={10} pb={16}>
+      <VStack flex={1} px={10} pb={16}>
         <Image 
           source={BackgroundImg}
+          defaultSource={BackgroundImg}
           alt="Pessoas"
           resizeMode="contain"
           position="absolute"
@@ -54,10 +64,10 @@ export function SignUp() {
             placeholder="Senha"
             secureTextEntry  
           />
-          <Input 
+          {/* <Input 
             placeholder="Confirme a senha"
             secureTextEntry  
-          />
+          /> */}
 
           <Button title="Criar conta" />
         </Center>
@@ -66,6 +76,7 @@ export function SignUp() {
           <Button 
             title="Voltar para o login" 
             variant="outline"
+            onPress={handleGoBack}
           />
         </Center>
       </VStack>
