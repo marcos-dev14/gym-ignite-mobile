@@ -9,6 +9,7 @@ type ExerciseCardProps = TouchableOpacityProps & {
 export function ExerciseCard({title, ...rest}: ExerciseCardProps) {
   return (
     <TouchableOpacity
+      activeOpacity={0.7}
       {...rest}
     >
       <HStack bg="gray.500" alignItems="center" p={2} pr={4} rounded="md" mb={3}>
