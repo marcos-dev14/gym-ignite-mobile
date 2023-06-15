@@ -5,12 +5,15 @@ import {
   Center, 
   Text,
   Heading,
-  ScrollView
+  ScrollView,
+  useToast
 } from "native-base"
 import { useForm, Controller } from "react-hook-form"
-import { yupResolver } from '@hookform/resolvers/yup';
+import { yupResolver } from '@hookform/resolvers/yup'
 import * as yup from "yup";
 
+import { api } from "@services/api"
+import { AppError } from "@utils/AppError";
 
 import BackgroundImg from "@assets/background.png"
 import LogoSvg from "@assets/logo.svg"
@@ -52,8 +55,25 @@ export function SignUp() {
     navigation.goBack()
   }
 
-  function signUp(data: FormDataProps) {
-    console.log(data)
+  const toast = useToast()
+
+  async function signUp({ name, email, password }: FormDataProps) {
+    try {
+      const response = await api.post('/users', {
+        name,
+        email,
+        password
+      })
+    } catch (error) {
+      const isAppError = error instanceof AppError
+      const title = isAppError ? error?.message : 'Não foi possível criar a conta. Tente novamente mais tarde.'
+
+      toast.show({
+        title,
+        placement: 'top',
+        bgColor: 'red.500'
+      })
+    }
   }
 
   return (
