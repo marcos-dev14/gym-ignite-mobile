@@ -1,3 +1,4 @@
+import { useState } from "react"
 import { useNavigation } from "@react-navigation/native"
 import { 
   VStack, 
@@ -13,6 +14,7 @@ import { yupResolver } from '@hookform/resolvers/yup'
 import * as yup from "yup";
 
 import { api } from "@services/api"
+import { useAuth } from "@hooks/useAuth"
 import { AppError } from "@utils/AppError";
 
 import BackgroundImg from "@assets/background.png"
@@ -44,6 +46,9 @@ const signUpSchema = yup.object({
 })
 
 export function SignUp() {
+  const [isLoading, setIsLoading] = useState(false)
+
+  const { signIn } = useAuth()
 
   const { control, handleSubmit, formState: { errors } } = useForm<FormDataProps>({
     resolver: yupResolver(signUpSchema)
@@ -59,12 +64,18 @@ export function SignUp() {
 
   async function signUp({ name, email, password }: FormDataProps) {
     try {
-      const response = await api.post('/users', {
+      setIsLoading(true)
+
+      await api.post('/users', {
         name,
         email,
         password
       })
+
+      await signIn(email, password)
     } catch (error) {
+      setIsLoading(false)
+
       const isAppError = error instanceof AppError
       const title = isAppError ? error?.message : 'Não foi possível criar a conta. Tente novamente mais tarde.'
 
@@ -152,7 +163,7 @@ export function SignUp() {
               <Input 
                 value={value}
                 onChangeText={onChange}
-                placeholder="Senha"
+                placeholder="Confirme a senha"
                 secureTextEntry 
                 onSubmitEditing={handleSubmit(signUp)}
                 returnKeyType="send" 
@@ -164,6 +175,7 @@ export function SignUp() {
           <Button 
             title="Criar conta"
             onPress={handleSubmit(signUp)}
+            isLoading={isLoading}
           />
         </Center>
 
