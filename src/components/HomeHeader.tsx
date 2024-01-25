@@ -7,14 +7,18 @@ import { useAuth } from "@hooks/useAuth"
 import userPhotoDefault from "@assets/userPhotoDefault.png"
  
 import { UserPhoto } from "./UserPhoto"
+import { api } from "@services/api"
 
 export function HomeHeader() {
   const { user, signOut } = useAuth()
 
+  // Pegando o caminhada imagem no backend
+  const getUserPhoto = `${api.defaults.baseURL}/avatar/${user.avatar}`
+
   return (
     <HStack bg="gray.600" pt={16} pb={5} px={8} alignItems="center">
       <UserPhoto 
-        source={user.avatar ? { uri: user.avatar } : userPhotoDefault}
+        source={user.avatar ? { uri: getUserPhoto } : userPhotoDefault}
         alt="Imagem do usuário"
         size={16}
         mr={4}
